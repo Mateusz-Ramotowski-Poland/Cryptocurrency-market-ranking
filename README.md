@@ -44,3 +44,20 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+To run CORS Anywhere:
+
+1. Install Node.js.
+2. Install CORS Anywhere.
+
+For example, at a command prompt, enter:
+npm install cors-anywhere
+(This example command installs CORS Anywhere under the current directory, in node_modules\cors-anywhere.)
+
+3. Run CORS Anywhere.
+
+For example, at a command prompt, enter:
+node server.js
+
+CORS Anywhere responds with a message like this:
+Running CORS Anywhere on 127.0.0.1:8080

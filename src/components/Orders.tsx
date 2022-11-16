@@ -25,6 +25,8 @@ function preventDefault(event: React.MouseEvent) {
 }
 
 export function Orders() {
+  /* React.useEffect(); */
+
   return (
     <React.Fragment>
       <Title>Recent Orders</Title>
