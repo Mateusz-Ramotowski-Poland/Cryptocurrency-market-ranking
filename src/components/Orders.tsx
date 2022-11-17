@@ -7,6 +7,12 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { Title } from "./Title";
 
+import { api } from "../api";
+import { marketListItem, marketSummaryItem } from "./interfaces";
+const dataUrls = ["https://public.kanga.exchange/api/market/pairs", "https://public.kanga.exchange/api/market/summary"];
+let marketList: marketListItem[];
+let marketSummary: marketSummaryItem[];
+
 // Generate Order Data
 function createData(id: number, date: string, name: string, shipTo: string, paymentMethod: string, amount: number) {
   return { id, date, name, shipTo, paymentMethod, amount };
@@ -25,7 +31,19 @@ function preventDefault(event: React.MouseEvent) {
 }
 
 export function Orders() {
-  /* React.useEffect(); */
+  React.useEffect(() => {
+    const getMarketData = async () => {
+      await api.get(dataUrls[0]).then((data) => {
+        marketList = data;
+      });
+      await api.get(dataUrls[1]).then((data) => {
+        marketSummary = data;
+      });
+      console.log(marketList, marketSummary);
+    };
+
+    getMarketData();
+  });
 
   return (
     <React.Fragment>

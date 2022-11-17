@@ -1,17 +1,12 @@
 import async from "async";
+import { marketListItem, marketSummaryItem } from "../components/interfaces";
 import { fetchData } from "./fetchData";
 
-function get<Response>(url: string): any /* Promise<Response> */ {
+async function get(url: string): Promise<any> {
   const proxyServerURL = "https://thingproxy.freeboard.io/fetch/";
   const fullUrl = `${proxyServerURL}${url}`;
 
-  async.retry(
-    { times: 1, interval: 600 },
-    () => fetchData(fullUrl),
-    function (err, result) {
-      console.log(err, result);
-    }
-  );
+  return async.retry({ times: 20, interval: 300 }, async () => fetchData(fullUrl));
 }
 
 export const api = {
