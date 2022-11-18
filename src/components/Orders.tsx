@@ -8,29 +8,22 @@ import TableRow from "@mui/material/TableRow";
 import { Title } from "./Title";
 
 import { api } from "../api";
-import { marketListItem, marketSummaryItem } from "./interfaces";
+import { Market, MarketListItem, MarketSummaryItem, TableLine } from "./interfaces";
 const dataUrls = ["https://public.kanga.exchange/api/market/pairs", "https://public.kanga.exchange/api/market/summary"];
-let marketList: marketListItem[];
-let marketSummary: marketSummaryItem[];
+let marketList: MarketListItem[];
+let marketSummary: MarketSummaryItem[];
 
-// Generate Order Data
-function createData(id: number, date: string, name: string, shipTo: string, paymentMethod: string, amount: number) {
-  return { id, date, name, shipTo, paymentMethod, amount };
+function createData(id: number, highestBID: string, name: string, spread: string, lowestASK: string, rag: number): TableLine {
+  return { id, highestBID, name, spread, lowestASK, rag };
 }
-
-const rows = [
-  createData(0, "16 Mar, 2019", "Elvis Presley", "Tupelo, MS", "VISA ⠀•••• 3719", 312.44),
-  createData(1, "16 Mar, 2019", "Paul McCartney", "London, UK", "VISA ⠀•••• 2574", 866.99),
-  createData(2, "16 Mar, 2019", "Tom Scholz", "Boston, MA", "MC ⠀•••• 1253", 100.81),
-  createData(3, "16 Mar, 2019", "Michael Jackson", "Gary, IN", "AMEX ⠀•••• 2000", 654.39),
-  createData(4, "15 Mar, 2019", "Bruce Springsteen", "Long Branch, NJ", "VISA ⠀•••• 5919", 212.79),
-];
 
 function preventDefault(event: React.MouseEvent) {
   event.preventDefault();
 }
 
 export function Orders() {
+  const [market, setMarket] = React.useState<Market>({ marketList: [], marketSummary: [] });
+
   React.useEffect(() => {
     const getMarketData = async () => {
       await api.get(dataUrls[0]).then((data) => {
@@ -39,40 +32,46 @@ export function Orders() {
       await api.get(dataUrls[1]).then((data) => {
         marketSummary = data;
       });
-      console.log(marketList, marketSummary);
+
+      setMarket({ marketList, marketSummary });
     };
 
     getMarketData();
+  }, []);
+
+  console.log(market);
+
+  const rows: TableLine[] = market.marketList.map((marketItem, index) => {
+    const columnName = marketItem.ticker_id.replace("_", "/");
+
+    return createData(index, "1", columnName, "1", "1", 1);
   });
 
   return (
     <React.Fragment>
-      <Title>Recent Orders</Title>
+      <Title>Markets ranking</Title>
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell>Date</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Ship To</TableCell>
-            <TableCell>Payment Method</TableCell>
-            <TableCell align="right">Sale Amount</TableCell>
+            <TableCell>Nazwa rynku</TableCell>
+            <TableCell>Highest BID</TableCell>
+            <TableCell>Lowest ASK</TableCell>
+            <TableCell>Spread</TableCell>
+            <TableCell align="right">RAG</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {rows.map((row) => (
             <TableRow key={row.id}>
-              <TableCell>{row.date}</TableCell>
               <TableCell>{row.name}</TableCell>
-              <TableCell>{row.shipTo}</TableCell>
-              <TableCell>{row.paymentMethod}</TableCell>
-              <TableCell align="right">{`$${row.amount}`}</TableCell>
+              <TableCell>{row.highestBID}</TableCell>
+              <TableCell>{row.lowestASK}</TableCell>
+              <TableCell>{row.spread}</TableCell>
+              <TableCell align="right">{`$${row.rag}`}</TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
-      <Link color="primary" href="#" onClick={preventDefault} sx={{ mt: 3 }}>
-        See more orders
-      </Link>
     </React.Fragment>
   );
 }

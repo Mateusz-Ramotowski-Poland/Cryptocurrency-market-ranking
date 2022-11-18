@@ -1,5 +1,5 @@
 import async from "async";
-import { marketListItem, marketSummaryItem } from "../components/interfaces";
+import { MarketListItem, MarketSummaryItem } from "../components/interfaces";
 import { fetchData } from "./fetchData";
 
 async function get(url: string): Promise<any> {
